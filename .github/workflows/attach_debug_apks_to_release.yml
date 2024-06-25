@@ -30,17 +30,17 @@ jobs:
 
           echo "Setting vars"
           RELEASE_VERSION_NAME="${GITHUB_REF/refs\/tags\//}"
-          APK_DIR_PATH="./app/build/outputs/apk/release"
+          APK_DIR_PATH="./app/build/outputs/apk/debugMinify"
           APK_VERSION_TAG="$RELEASE_VERSION_NAME-github-release"
           APK_BASENAME_PREFIX="termux-styling_$APK_VERSION_TAG"
 
           echo "Building APKs for 'APK_VERSION_TAG' release"
-          if ! ./gradlew assembleRelease; then
+          if ! ./gradlew assembleDebugMinify; then
             exit_on_error "Build failed for '$APK_VERSION_TAG' release."
           fi
 
-          echo "Renaming app-release.apk to release name"
-          if ! (mv ${APK_DIR_PATH}/app-release.apk ${APK_DIR_PATH}/${APK_BASENAME_PREFIX}.apk); then
+          echo "Renaming app-debugMinify.apk to release name"
+          if ! (mv ${APK_DIR_PATH}/app-debugMinify.apk ${APK_DIR_PATH}/${APK_BASENAME_PREFIX}.apk); then
             exit_on_error "Failed to rename '$APK_VERSION_TAG' release apk filename."
           fi
 
@@ -52,10 +52,9 @@ jobs:
           fi
 
           echo "Attaching APKs to github release"
-          if ! hub release edit \
-          -m "" \
-          -a "$APK_DIR_PATH/${APK_BASENAME_PREFIX}.apk" \
-          -a "$APK_DIR_PATH/${APK_BASENAME_PREFIX}_sha256sum" \
-          "$RELEASE_VERSION_NAME"; then
+          if ! gh release upload "$RELEASE_VERSION_NAME" \
+            "$APK_DIR_PATH/${APK_BASENAME_PREFIX}.apk" \
+            "$APK_DIR_PATH/${APK_BASENAME_PREFIX}_sha256sum" \
+          ; then
             exit_on_error "Attach APKs to release failed for '$APK_VERSION_TAG' release."
           fi
