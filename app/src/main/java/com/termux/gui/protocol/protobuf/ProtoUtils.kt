@@ -9,8 +9,10 @@ import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnKeyListener
 import android.widget.*
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
@@ -212,6 +214,30 @@ class ProtoUtils {
             map[MotionEvent.ACTION_CANCEL] = GUIProt0.TouchEvent.Action.cancel
             map[MotionEvent.ACTION_MOVE] = GUIProt0.TouchEvent.Action.move
             TOUCH_EVENT_MAP = Collections.unmodifiableMap(map)
+        }
+        
+        fun keyListener(eventQueue: LinkedBlockingQueue<GUIProt0.Event>, v: GUIProt0.View): OnKeyListener {
+            return OnKeyListener { _, _, event ->
+                val b = GUIProt0.KeyEvent.newBuilder()
+                b.flags = event.flags
+                when (event.action) {
+                    KeyEvent.ACTION_DOWN -> b.action = GUIProt0.KeyAction.ACTION_DOWN
+                    KeyEvent.ACTION_UP -> b.action = GUIProt0.KeyAction.ACTION_UP
+                }
+                b.v = v
+                b.codePoint = event.unicodeChar
+                var mod = 0
+                if (event.isShiftPressed) mod = GUIProt0.KeyEvent.Modifier.MOD_LSHIFT_VALUE or GUIProt0.KeyEvent.Modifier.MOD_RSHIFT_VALUE
+                if (event.isCtrlPressed) mod = mod or GUIProt0.KeyEvent.Modifier.MOD_LCTRL_VALUE or GUIProt0.KeyEvent.Modifier.MOD_RCTRL_VALUE
+                if (event.isAltPressed) mod = mod or GUIProt0.KeyEvent.Modifier.MOD_ALT_VALUE
+                if (event.isFunctionPressed) mod = mod or GUIProt0.KeyEvent.Modifier.MOD_FN_VALUE
+                if (event.isCapsLockOn) mod = mod or GUIProt0.KeyEvent.Modifier.MOD_CAPS_LOCK_VALUE
+                if (event.isNumLockOn) mod = mod or GUIProt0.KeyEvent.Modifier.MOD_NUM_LOCK_VALUE
+                b.modifiers = mod
+                b.code = event.keyCode
+                eventQueue.offer(GUIProt0.Event.newBuilder().setKeyEvent(b).build())
+                true
+            }
         }
         
         @SuppressLint("ClickableViewAccessibility")
