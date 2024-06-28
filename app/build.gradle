@@ -144,7 +144,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.11.0'
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'androidx.activity:activity-ktx:1.5.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
 
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
     
