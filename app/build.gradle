@@ -10,7 +10,7 @@ plugins {
 
 protobuf {
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.25.2'
+        artifact = 'com.google.protobuf:protoc:4.27.2'
     }
     generateProtoTasks {
         all().forEach {
