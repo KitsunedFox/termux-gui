@@ -148,7 +148,7 @@ dependencies {
 
     implementation "androidx.security:security-crypto:1.1.0-alpha06"
     
-    implementation "com.google.protobuf:protobuf-javalite:3.25.2"
+    implementation "com.google.protobuf:protobuf-javalite:4.27.2"
     
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.6.1'
